@@ -22,20 +22,31 @@ pipeline {
     agent any 
 
     stages {
-        stage('Build'){
+        stage('Build') {
             steps {
-                bat "${env.SAG_HOME}/common/lib/ant/bin/ant.bat -DSAGHome=${env.SAG_HOME} -DSAG_CI_HOME=${env.SAG_CI_HOME} -DprojectName=${env.JOB_NAME} build"
+                bat """
+                    set JAVA_HOME=${env.JAVA_HOME}
+                    set PATH=%JAVA_HOME%\\bin;%PATH%
+                    "${env.SAG_HOME}/common/lib/ant/bin/ant.bat" -DSAGHome=${env.SAG_HOME} -DSAG_CI_HOME=${env.SAG_CI_HOME} -DprojectName=${env.JOB_NAME} build
+                """
             }
         }
         stage('Deploy') {
             steps {
-		bat "${env.SAG_HOME}/common/lib/ant/bin/ant.bat -DSAGHome=${env.SAG_HOME} -DSAG_CI_HOME=${env.SAG_CI_HOME} -DprojectName=${env.JOB_NAME} deploy"
+                bat """
+                    set JAVA_HOME=${env.JAVA_HOME}
+                    set PATH=%JAVA_HOME%\\bin;%PATH%
+                    "${env.SAG_HOME}/common/lib/ant/bin/ant.bat" -DSAGHome=${env.SAG_HOME} -DSAG_CI_HOME=${env.SAG_CI_HOME} -DprojectName=${env.JOB_NAME} deploy
+                """
             }
         }
- 	stage('Test') {
+        stage('Test') {
             steps {
-		bat "${env.SAG_HOME}/common/lib/ant/bin/ant.bat -DSAGHome=${env.SAG_HOME} -DSAG_CI_HOME=${env.SAG_CI_HOME} -DprojectName=${env.JOB_NAME} test"
-		junit 'report/'
+                bat """
+                    set JAVA_HOME=${env.JAVA_HOME}
+                    set PATH=%JAVA_HOME%\\bin;%PATH%
+                    "${env.SAG_HOME}/common/lib/ant/bin/ant.bat" -DSAGHome=${env.SAG_HOME} -DSAG_CI_HOME=${env.SAG_CI_HOME} -DprojectName=${env.JOB_NAME} test
+                """
             }
         }
     }
